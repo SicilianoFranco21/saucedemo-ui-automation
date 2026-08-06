@@ -1,8 +1,8 @@
-import { test, expect } from '../../fixtures/fixtures.js';
+import { test, expect } from '../../playwright/fixtures/fixtures.js';
 import { addProducts } from '../../helpers/inventory.helper.js';
 import { calculateSubtotal, calculateTax, calculateTotal } from '../../helpers/calculations.helper.js';
 import { parsePrice } from '../../helpers/price.parser.js';
-import type { CheckoutStepOnePage } from '../../pages/checkout-step-one-page.js';
+import type { CheckoutStepOnePage } from '../../playwright/pages/checkout-step-one-page.js';
 import type { Product } from '../../models/product.model.js';
 import productsData from '../../data/products.json' with { type: 'json' };
 import checkoutData from '../../data/sample-checkout-data.json' with { type: 'json' };
@@ -14,7 +14,6 @@ const PRODUCT_NAMES: string[] = PRODUCTS.map((p: Product) => p.name);
 const { firstName, lastName, postalCode } = checkoutData.userInformation.sampleInfo1;
 
 test.describe('Checkout', { tag: '@regression' }, () => {
-
   // Rule: Customer information form validates required fields before proceeding
 
   test.describe('Step 1 - Customer Information', { tag: '@smoke' }, () => {

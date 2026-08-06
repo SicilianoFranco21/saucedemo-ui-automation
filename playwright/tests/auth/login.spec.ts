@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/fixtures.js';
+import { test, expect } from '../../playwright/fixtures/fixtures.js';
 import users from '../../data/users.json' with { type: 'json' };
 
 // Feature: Login

@@ -1,4 +1,4 @@
-import type { InventoryPage } from '../pages/inventory-page.js';
+import type { InventoryPage } from '../playwright/pages/inventory-page.js';
 
 export async function addProducts(inventoryPage: InventoryPage, productNames: string[]): Promise<void> {
   for (const name of productNames) {
