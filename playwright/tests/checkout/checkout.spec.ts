@@ -1,8 +1,8 @@
-import { test, expect } from '../../playwright/fixtures/fixtures.js';
+import { test, expect } from '../../fixtures/fixtures.js';
 import { addProducts } from '../../helpers/inventory.helper.js';
 import { calculateSubtotal, calculateTax, calculateTotal } from '../../helpers/calculations.helper.js';
 import { parsePrice } from '../../helpers/price.parser.js';
-import type { CheckoutStepOnePage } from '../../playwright/pages/checkout-step-one-page.js';
+import type { CheckoutStepOnePage } from '../../pages/checkout-step-one-page.js';
 import type { Product } from '../../models/product.model.js';
 import productsData from '../../data/products.json' with { type: 'json' };
 import checkoutData from '../../data/sample-checkout-data.json' with { type: 'json' };

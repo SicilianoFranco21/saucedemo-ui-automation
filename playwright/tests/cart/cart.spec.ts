@@ -1,9 +1,9 @@
-import { test, expect } from '../../playwright/fixtures/fixtures.js';
+import { test, expect } from '../../fixtures/fixtures.js';
 import { addProducts } from '../../helpers/inventory.helper.js';
 import { removeProducts } from '../../helpers/cart.helper.js';
 import type { Product } from '../../models/product.model.js';
 import productsData from '../../data/products.json' with { type: 'json' };
-import type { ProductItemComponent } from '../../playwright/pages/components/product-item.component.js';
+import type { ProductItemComponent } from '../../pages/components/product-item.component.js';
 
 // Feature: Cart
 

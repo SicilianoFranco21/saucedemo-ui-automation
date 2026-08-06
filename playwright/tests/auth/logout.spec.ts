@@ -1,5 +1,5 @@
-import { test, expect } from '../../playwright/fixtures/fixtures.js';
-import type { SauceDemoBasePage } from '../../playwright/pages/saucedemo-base-page.js';
+import { test, expect } from '../../fixtures/fixtures.js';
+import type { SauceDemoBasePage } from '../../pages/saucedemo-base-page.js';
 
 // Feature: Logout
 
