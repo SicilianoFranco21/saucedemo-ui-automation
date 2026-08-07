@@ -1,4 +1,4 @@
-import type { CartPage } from '../playwright/pages/cart-page.js';
+import type { CartPage } from '../pages/cart-page.js';
 
 export async function removeProducts(cartPage: CartPage, productNames: string[]) {
   for (const name of productNames) {

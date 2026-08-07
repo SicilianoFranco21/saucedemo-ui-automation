@@ -9,6 +9,6 @@ export function calculateTax(subtotal: number) {
 }
 
 export function calculateTotal(products: Product[]) {
-  const subtotal = calculateSubtotal(products);
+  const subtotal: number = calculateSubtotal(products);
   return subtotal + calculateTax(subtotal);
 }
