@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "code-reviewer": {
+      "description": "Reviews architecture applying CONTRIBUTING.md, POM, SOLID, KISS, and DRY — read-only until edits are explicitly requested",
+      "mode": "primary",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "{file:./.opencode/agents/code-reviewer.md}"
+    }
+  }
+}
