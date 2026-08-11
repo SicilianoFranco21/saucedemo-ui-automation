@@ -38,10 +38,10 @@ This document explains how to extend the framework — adding new pages, compone
 - The page has a header, footer, side menu, and secondary header → extend `SauceDemoBasePage`
 - The page has none of those (e.g. login screen) → extend `BasePage`
 
-### 2. Create the file under `pages/`
+### 2. Create the file under `playwright/pages/`
 
 ```typescript
-// pages/example-page.ts
+// playwright/pages/example-page.ts
 import type { Page } from '@playwright/test';
 import { SauceDemoBasePage } from './saucedemo-base-page.js';
 
@@ -76,10 +76,10 @@ export class ExamplePage extends SauceDemoBasePage {
 
 ## Adding a new Component
 
-Components live in `pages/components/`. They receive a **root `Locator`** in the constructor — never `Page` — so they are scoped to their container and reusable across pages.
+Components live in `playwright/pages/components/`. They receive a **root `Locator`** in the constructor — never `Page` — so they are scoped to their container and reusable across pages.
 
 ```typescript
-// pages/components/example.component.ts
+// playwright/pages/components/example.component.ts
 import type { Locator } from '@playwright/test';
 
 export class ExampleComponent {
@@ -97,7 +97,7 @@ export class ExampleComponent {
 }
 ```
 
-Then compose it in the Page Object:
+Then compose it in the Page Object. Declare the root locator as a named variable first so the intent is clear:
 
 ```typescript
 import { ExampleComponent } from './components/example.component.js';
@@ -107,7 +107,8 @@ export class ExamplePage extends SauceDemoBasePage {
 
   constructor(page: Page) {
     super(page);
-    this.example = new ExampleComponent(page.getByTestId('example-container'));
+    const exampleContainer = page.getByTestId('example-container');
+    this.example = new ExampleComponent(exampleContainer);
   }
 }
 ```
@@ -116,30 +117,46 @@ export class ExamplePage extends SauceDemoBasePage {
 
 ## Registering a new Fixture
 
-All fixtures live in `fixtures/fixtures.ts`. Every page fixture that requires authentication must depend on `authenticatedPage`, not on `page` directly.
+Fixtures are split across two files and merged in a third:
 
-### 1. Add the type to `SauceDemoFixtures`
+| File | Owns |
+|------|------|
+| `playwright/fixtures/navigation.fixture.ts` | `authenticatedPage` |
+| `playwright/fixtures/page-object.fixture.ts` | All Page Object fixtures |
+| `playwright/fixtures/fixtures.ts` | Merges both; re-exports `test` and `expect` |
+
+Every page fixture that requires authentication must depend on `authenticatedPage`, not on `page` directly.
+
+### 1. Add the type to `PageObjectFixtures` in `page-object.fixture.ts`
 
 ```typescript
-type SauceDemoFixtures = {
+export type PageObjectFixtures = {
   // ... existing fixtures
   examplePage: ExamplePage;
 };
 ```
 
-### 2. Import the Page Object
+### 2. Import the Page Object and add the fixture implementation
 
 ```typescript
 import { ExamplePage } from '../pages/example-page.js';
+
+export const pageObjectFixtures = {
+  // ... existing fixtures
+  examplePage: async ({ authenticatedPage }: FixtureContext, use: FixtureUse<ExamplePage>) => {
+    const examplePage = new ExamplePage(authenticatedPage);
+    await use(examplePage);
+  },
+};
 ```
 
-### 3. Add the fixture implementation
+### 3. Register it in `fixtures.ts`
 
 ```typescript
-examplePage: async ({ authenticatedPage }, use) => {
-  const examplePage = new ExamplePage(authenticatedPage);
-  await use(examplePage);
-},
+const fixtures = {
+  // ... existing fixtures
+  examplePage: pageObjectFixtures.examplePage,
+};
 ```
 
 The fixture is now available in any test as `{ examplePage }` without any additional imports.
@@ -148,14 +165,14 @@ The fixture is now available in any test as `{ examplePage }` without any additi
 
 ## Adding test data
 
-Test data lives in `data/*.json` and is typed via interfaces in `models/`.
+Test data lives in `playwright/data/*.json` and is typed via interfaces in `playwright/models/`.
 
 ### Adding a new entry to an existing dataset
 
 Open the relevant JSON file and add the new entry following the existing shape:
 
 ```json
-// data/products.json
+// playwright/data/products.json
 {
   "products": {
     "existingProduct": { ... },
@@ -173,8 +190,8 @@ Tests that iterate over the dataset will automatically pick up the new entry —
 
 ### Adding a new dataset
 
-1. Create `data/new-dataset.json`
-2. Define the TypeScript interface in `models/new-dataset.model.ts`
+1. Create `playwright/data/new-dataset.json`
+2. Define the TypeScript interface in `playwright/models/new-dataset.model.ts`
 3. Import in the spec with `with { type: 'json' }`:
 
 ```typescript
@@ -188,7 +205,7 @@ import newData from '../../data/new-dataset.json' with { type: 'json' };
 ### File location
 
 ```
-tests/
+playwright/tests/
 └── <module>/
     └── <module>.spec.ts
 ```
@@ -216,13 +233,17 @@ test.describe('<Page or feature>', { tag: '@regression' }, () => {
 
 ### Login tests — special case
 
-Tests that exercise the login form must opt out of the pre-authenticated session:
+Tests that exercise the login form must opt out of the pre-authenticated session. Place this at **file level**, before any `test.describe` block:
 
 ```typescript
-test.use({ storageState: undefined });
-```
+import { test, expect } from '../../fixtures/fixtures.js';
 
-Place this at the top of the `test.describe` block before any test definitions.
+test.use({ storageState: undefined });
+
+test.describe('Login', { tag: '@regression' }, () => {
+  // ...
+});
+```
 
 ---
 
@@ -247,10 +268,10 @@ test.describe('Add to Cart', { tag: ['@smoke', '@regression'] }, () => { ... });
 
 ```bash
 # Run all tests in a folder
-npx playwright test tests/cart/
+npx playwright test playwright/tests/cart/
 
 # Run a single spec file
-npx playwright test tests/cart/cart.spec.ts
+npx playwright test playwright/tests/cart/cart.spec.ts
 
 # Run tests matching a name pattern
 npx playwright test --grep "adds.*to the cart"
