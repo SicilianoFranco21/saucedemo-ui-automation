@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "instructions": ["README.md", "CONTRIBUTING.md"],
   "agent": {
     "code-reviewer": {
       "description": "Reviews architecture applying CONTRIBUTING.md, POM, SOLID, KISS, and DRY — read-only until edits are explicitly requested",
