@@ -1,8 +1,11 @@
-# Playwright
+# Node / dependencies
 node_modules/
+
+# Playwright test outputs and caches
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-AGENTS.md
+
+# Project artifacts not part of source
