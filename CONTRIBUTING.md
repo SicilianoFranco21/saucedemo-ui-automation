@@ -6,6 +6,7 @@ This document explains how to extend the framework — adding new pages, compone
 
 ## Table of Contents
 
+- [Environment setup](#environment-setup)
 - [Project conventions](#project-conventions)
 - [Adding a new Page Object](#adding-a-new-page-object)
 - [Adding a new Component](#adding-a-new-component)
@@ -14,6 +15,20 @@ This document explains how to extend the framework — adding new pages, compone
 - [Writing a new spec file](#writing-a-new-spec-file)
 - [Tagging strategy](#tagging-strategy)
 - [Running a specific module](#running-a-specific-module)
+- [Git workflow](#git-workflow)
+- [Code review](#code-review)
+
+---
+
+## Environment setup
+
+Follow the installation steps in [README.md](./README.md#installation--setup). Once dependencies and browsers are installed, verify everything works by running the full suite:
+
+```bash
+npm test
+```
+
+No environment variables are required.
 
 ---
 
@@ -282,3 +297,76 @@ npm run test:smoke
 # Run with UI mode for debugging
 npm run test:ui
 ```
+
+---
+
+## Git workflow
+
+### Branches
+
+```
+<type>/<short-description>
+
+# Examples
+feat/add-checkout-page
+fix/cart-badge-count
+docs/update-contributing
+refactor/split-fixture-files
+```
+
+| Type | When to use |
+|------|-------------|
+| `feat` | New page, component, fixture, or test |
+| `fix` | Bug fix in existing code |
+| `docs` | Documentation only |
+| `refactor` | Code restructuring without behaviour change |
+| `chore` | Tooling, config, or dependency updates |
+
+### Commits
+
+```
+<type>(<scope>): <short description in imperative mood>
+
+# Examples
+feat(checkout): add checkout complete page object
+fix(cart): correct badge count after item removal
+docs(contributing): add git workflow section
+test(inventory): add smoke tag to add-to-cart suite
+```
+
+- Keep the subject line under 72 characters
+- Use imperative mood: "add" not "added" or "adds"
+- Reference issues or PRs in the body when relevant
+
+### Pull requests
+
+1. Branch off `main`
+2. Keep PRs focused — one feature or fix per PR
+3. Ensure `npm test` passes locally before opening a PR
+4. Fill in the PR description: what changed and why
+5. Request at least one review before merging
+
+---
+
+## Code review
+
+### Process
+
+1. Open a PR against `main` with a clear description
+2. The reviewer checks for correctness, conventions, and test coverage
+3. Address all comments before merging
+4. Squash or rebase as agreed with the reviewer before merge
+
+### What reviewers check
+
+| Area | Criteria |
+|------|----------|
+| **POM conventions** | Correct base class, components receive `root: Locator`, fixtures depend on `authenticatedPage` |
+| **Selectors** | Only `data-test` attributes via `getByTestId()` — no CSS classes, no XPath |
+| **TypeScript** | No `any`, correct use of `import type`, array index access null-checked |
+| **Tests** | Gherkin comments present, correct tag (`@smoke` / `@regression`), no hardcoded values |
+| **Design principles** | No duplication, single responsibility, no unnecessary complexity |
+
+### Automated review
+
+This project includes an OpenCode `code-reviewer` agent that applies CONTRIBUTING.md rules, POM conventions, and SOLID/DRY/KISS principles. It operates in read-only mode — it analyses and suggests but does not modify files. Run it via OpenCode before requesting a human review for a first pass.
