@@ -1,17 +1,17 @@
-name: CI Smoke Test
+name: CI Regression
 
 on:
   pull_request:
-    branches: [ test ]
+    branches: [ stage, main ]
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  smoke-tests:
+  regression-tests:
     runs-on: ubuntu-latest
 
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -28,8 +28,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Smoke Tests
-        run: npx playwright test --grep '@smoke'
+      - name: Run Regression Tests
+        run: npx playwright test --grep '@regression'
 
       - name: Upload Playwright Report
         if: always()
