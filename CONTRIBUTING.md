@@ -302,6 +302,8 @@ npm run test:ui
 
 ## Git workflow
 
+> For the full branching strategy, environment promotion flow, and branch protection rules, see [GIT-WORKFLOW.md](./GIT-WORKFLOW.md).
+
 ### Branches
 
 ```
@@ -340,7 +342,7 @@ test(inventory): add smoke tag to add-to-cart suite
 
 ### Pull requests
 
-1. Branch off `main`
+1. Branch off `test`
 2. Keep PRs focused — one feature or fix per PR
 3. Ensure `npm test` passes locally before opening a PR
 4. Fill in the PR description: what changed and why
@@ -352,7 +354,7 @@ test(inventory): add smoke tag to add-to-cart suite
 
 ### Process
 
-1. Open a PR against `main` with a clear description
+1. Open a PR against `test` with a clear description
 2. The reviewer checks for correctness, conventions, and test coverage
 3. Address all comments before merging
 4. Squash or rebase as agreed with the reviewer before merge
